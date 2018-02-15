@@ -235,9 +235,9 @@ var str:StrArray;N:word;s,command,UTransactionID,URundomKey,Amount,ClientID,Err:
 //<- SendFrom RyRe35e0ACySBuDaexY5PvaKDi8pWMD {"result":"982a3ad22c6964bb1a203387f0267f880ae3bd66949d0872f06e1ffd2d8ec694","error":null,"id":"BTCExposed"}
     s:=ExtractTextBetween(str[4],'"result":"','","');
     //work.Memo4.Lines.Add(s);
-    Msge.Label1.Caption:='А это ID Вашей транзакции';
+    Msge.Label1.Caption:='Transaction ID';
     Msge.Edit1.Text:=s;
-    Msge.Showmodal;
+    if not Msge.Visible then Msge.Showmodal;
     end;
 
     procedure listtransactions;
@@ -255,8 +255,8 @@ var str:StrArray;N:word;s,command,UTransactionID,URundomKey,Amount,ClientID,Err:
     begin
     go.UrundomKey:=str[3];
     if str[4]='20' then begin Autor.Show;work.visible:=false; exit;end;
-    if str[4]='22' then  work.Panel31.Caption:='Ошибка: УВас нет столько денег!';
-    if str[4]='23' then  work.Panel31.Caption:='Ошибка: Неверный адрес!';
+    if str[4]='22' then  work.Panel31.Caption:='Error: No Money!';
+    if str[4]='23' then  work.Panel31.Caption:='Error: Address!';
     work.Panel31.Font.Color:=clred;
     timer1.Enabled:=false;
     timer3.Enabled:=true;
@@ -268,10 +268,26 @@ var str:StrArray;N:word;s,command,UTransactionID,URundomKey,Amount,ClientID,Err:
        Work.memo3.Lines.Add(str[3]);
     end;
 
+    procedure _CreateOffer;
+    var s:string; count,i:integer;
+    begin
+    go.UrundomKey:=str[3];
+       showmessage('Success');
+    end;
+
+    procedure _GetOffers;
+    var s:string; count,i:integer;
+    begin
+    go.UrundomKey:=str[3];
+       for i:=4 to n-1 do
+       OutOfr(str[i]);
+    end;
+
 begin
    s:=Socket.ReceiveText;
    String_to_array(s,str,N);//N-количество элементов = тебе не понадобица
    memo1.Lines.Add('<- '+s);// В МЕМО <- c2 *  //<- VHOD S SERVERA, c2- otvet na etu komandu, , * - luboi nabor textovyh komand
+
 
    if str[1]='_StartClient'     then _StartClient     else
    if str[1]='GetWaletFullInfo' then GetWaletFullInfo else
@@ -281,6 +297,8 @@ begin
    if str[1]='listtransactions' then listtransactions else
    if str[1]='URKError'         then URKError         else
    if str[1]='_SndMsg'          then _SndMsg          else
+   if str[1]='_CreateOffer'     then _CreateOffer     else
+   if str[1]='_GetOffers'       then _GetOffers       else
 
    if str[1]='c2' then begin
    ConnectionName := str[2];// определене имени соединения
@@ -300,7 +318,7 @@ begin
       work.show;
       s:='StartClient'+' '+ConnectionName;//+' ';
       form1.ClientSocket1.Socket.SendText(s+#13) ;
-      end else Autor.Panel1.Caption:='Ошибка';
+      end else Autor.Panel1.Caption:='Error';
    exit;
    end;
 
@@ -317,7 +335,7 @@ begin
       Form1.visible:=false;
       s:='StartClient'+' '+ConnectionName;//+' ';
       form1.ClientSocket1.Socket.SendText(s+#13) ;
-      end else Autor.Panel1.Caption:='Ошибка';
+      end else Autor.Panel1.Caption:='Error';
    exit;
    end;
 
@@ -367,7 +385,7 @@ end;
 procedure TForm1.Timer1Timer(Sender: TObject);
 begin
     //Timer1.Enabled:=false;
-    if not ClientSocket1.Active then begin if not autor.Visible then autor.Show;work.visible:=false; autor.Panel1.Caption:='Идет соединения с сервером'; ClientSocket1.Close; ClientSocket1.Open;end
+    if not ClientSocket1.Active then begin if not autor.Visible then autor.Show;work.visible:=false; autor.Panel1.Caption:='Connecting..'; ClientSocket1.Close; ClientSocket1.Open;end
     else work.Panel31.Caption:='Connected';
 end;
 

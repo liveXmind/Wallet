@@ -23,19 +23,6 @@ type
     Panel8: TPanel;
     Label1: TLabel;
     Label2: TLabel;
-    Label3: TLabel;
-    Panel9: TPanel;
-    Panel10: TPanel;
-    Edit1: TEdit;
-    Panel11: TPanel;
-    Panel12: TPanel;
-    Edit2: TEdit;
-    Label4: TLabel;
-    Panel13: TPanel;
-    Panel14: TPanel;
-    Edit3: TEdit;
-    Button1: TButton;
-    Button2: TButton;
     Label5: TLabel;
     Panel15: TPanel;
     Panel16: TPanel;
@@ -73,15 +60,12 @@ type
     Label11: TLabel;
     Button6: TButton;
     Button7: TButton;
-    Label12: TLabel;
-    ListView3: TListView;
     ListView1: TListView;
     TabSheet7: TTabSheet;
     Label14: TLabel;
     Label15: TLabel;
     Label16: TLabel;
     Panel37: TPanel;
-    Label17: TLabel;
     Panel38: TPanel;
     Panel39: TPanel;
     Panel40: TPanel;
@@ -100,7 +84,81 @@ type
     Edit8: TEdit;
     Label18: TLabel;
     Edit9: TEdit;
-    Button8: TButton;
+    Label19: TLabel;
+    ComboBox2: TComboBox;
+    Label20: TLabel;
+    Label21: TLabel;
+    Panel9: TPanel;
+    Panel10: TPanel;
+    Image2: TImage;
+    Image3: TImage;
+    Image4: TImage;
+    Image5: TImage;
+    Image6: TImage;
+    Image7: TImage;
+    Image8: TImage;
+    Image9: TImage;
+    Image10: TImage;
+    Panel11: TPanel;
+    Panel12: TPanel;
+    Panel13: TPanel;
+    Panel14: TPanel;
+    Panel35: TPanel;
+    Panel36: TPanel;
+    Panel42: TPanel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Image11: TImage;
+    GroupBox1: TGroupBox;
+    Label12: TLabel;
+    Panel45: TPanel;
+    Label23: TLabel;
+    Panel46: TPanel;
+    Panel47: TPanel;
+    Image12: TImage;
+    Image13: TImage;
+    Image14: TImage;
+    Image15: TImage;
+    Image16: TImage;
+    Image17: TImage;
+    StaticText1: TStaticText;
+    StaticText2: TStaticText;
+    StaticText3: TStaticText;
+    Image18: TImage;
+    Panel48: TPanel;
+    Label25: TLabel;
+    Label26: TLabel;
+    Label27: TLabel;
+    Label28: TLabel;
+    Label29: TLabel;
+    ListView4: TListView;
+    lo1: TListView;
+    lo2: TListView;
+    GroupBox2: TGroupBox;
+    ComboBox3: TComboBox;
+    Panel43: TPanel;
+    Panel44: TPanel;
+    StaticText5: TStaticText;
+    ComboBox4: TComboBox;
+    StaticText6: TStaticText;
+    Label30: TLabel;
+    Edit1: TEdit;
+    Label22: TLabel;
+    Edit2: TEdit;
+    StaticText7: TStaticText;
+    Edit3: TEdit;
+    Label24: TLabel;
+    Label31: TLabel;
+    Image19: TImage;
+    Edit11: TEdit;
+    Label32: TLabel;
+    Label33: TLabel;
+    Edit10: TEdit;
+    BR: TRadioButton;
+    SR: TRadioButton;
+    Button1: TButton;
+    Label34: TLabel;
+    Label35: TLabel;
     procedure FormShow(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
@@ -120,6 +178,16 @@ type
     procedure lv2SelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
     procedure Button6Click(Sender: TObject);
+    procedure ComboBox2Select(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure ComboBox3Select(Sender: TObject);
+    procedure ComboBox4Select(Sender: TObject);
+    procedure Edit11Change(Sender: TObject);
+    procedure Image18Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure lo1SelectItem(Sender: TObject; Item: TListItem;
+      Selected: Boolean);
+    procedure Panel46Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -128,8 +196,11 @@ type
 
 var
   Work: TWork;
+  CCrnsy : string;
 
+//procedure OutEp1(address,category,time,amount,confirm,txid:string);
 procedure OutEp1(line:string);
+procedure OutOfr(Line:string);
 
 implementation
 
@@ -137,23 +208,38 @@ uses Unit1, Autorisation;
 
 {$R *.dfm}
 
-function  GetExePath:string;
-var i:word;s:string;
-begin
-   s:=Paramstr(0);
-   for i:=length(s) downto 1 do
-   if (s[i]='\')or(s[i]=':') then begin
-   setlength(s,i);
-   GetExePath:=s;
-   exit;
-   end;
-end;
+
+
+procedure OutOfr(Line:string);
+var ListItem:TListItem;r1,r2:single;s:string;st:StrArray;N:word;
+    Direction,bay,sell,AmountB,AmountS,tim,IDN:string;
+begin with Work do begin
+    String_to_array(line,st,N);
+    Direction:=st[1];
+    bay      :=st[2];
+    sell     :=st[3];
+    AmountB  :=st[4];
+    AmountS  :=st[5];
+    tim      :=st[6];
+    IDN      :=st[7];
+    r1:=strtofloat(stringreplace(AmountB,'.',',',[rfReplaceAll]));
+    r2:=strtofloat(stringreplace(Amounts,'.',',',[rfReplaceAll]));
+    str(r2/r1:2:6,s);
+    ListItem := lo1.Items.Add;
+    ListItem.Caption :=s;
+    str(r1:2:6,s);
+    ListItem.SubItems.Add(s);
+    str(r2:2:6,s);
+    ListItem.SubItems.Add(s);
+    ListItem.SubItems.Add(IDN);
+end end;
 
 procedure OutEp1(line:string);
 var ListItem:TListItem;s,s1,s2:string;R1,R2,p:real;k,d,dd:integer;address,category,time,amount,confirm,txid:string;
     str:StrArray;N:word;
 begin with Work do begin
     String_to_array(line,str,N);
+    if n<6 then exit;
     address:=str[1];category:=str[2];time:=str[3];amount:=str[4];confirm:=str[5];txid:=str[6];
     ListItem := lv2.Items.Add;
     ListItem.Caption :=address;
@@ -171,6 +257,7 @@ begin
     Label13Click(sender);
 Autor.edit1.Text:='';
 Autor.edit2.Text:='';
+//    CCrnsy:='18332';
 end;
 
 procedure TWork.Button2Click(Sender: TObject);
@@ -194,7 +281,7 @@ procedure TWork.Label13Click(Sender: TObject);
 var s:string;
 begin
      label13.Visible:=false;
-     s:='GetWaletFullInfo'+' '+ConnectionName+' '+go.UrundomKey+' ';//+'test';//+' ';
+     s:='GetWaletFullInfo'+' '+ConnectionName+' '+go.UrundomKey+' * '+CCrnsy;//+'test';//+' ';
      Form1.SendToServer(s);
 end;
 
@@ -213,13 +300,13 @@ end;
 procedure TWork.Panel30Click(Sender: TObject);
 var s:string;
 begin
-     s:='CreateNewAdres'+' '+ConnectionName+' '+go.UrundomKey+' '+'*';//+' ';
+     s:='CreateNewAdres'+' '+ConnectionName+' '+go.UrundomKey+' * '+CCrnsy;//+' ';
      Form1.SendToServer(s);
 end;
 
 procedure TWork.Panel39Click(Sender: TObject);
 begin
-    memo4.Text:='list is empty';
+    memo4.Text:='Список пуст';
 
 end;
 
@@ -227,7 +314,7 @@ procedure TWork.Panel38Click(Sender: TObject);
 var s:string;
 begin
      memo4.Lines.Clear;
-     s:='GetCloudAdreses'+' '+ConnectionName+' '+go.UrundomKey+' '+'*';//+' ';
+     s:='GetCloudAdreses'+' '+ConnectionName+' '+go.UrundomKey+' * '+CCrnsy;//+' ';
      Form1.SendToServer(s);
 end;
 
@@ -239,12 +326,12 @@ end;
 procedure TWork.Button3Click(Sender: TObject);
 var s:string;
 begin
-    // Perhaps you need a call back here to ensure the privacy of the transaction
+
      memo4.Lines.Clear;
      if length(edit4.Text)<>34 then begin showmessage('Invalid Address!');exit;end;
-     if strtofloatdef(edit5.Text,0)<=0.00001 then begin showmessage('Invalid amount!');exit;end;
+     if strtofloatdef(edit5.Text,0)<=0.00001 then begin showmessage('Invalid amount');exit;end;
      if strtointdef(edit7.Text,0)<=0 then begin showmessage('Invalid Confirmation Num.!');exit;end;
-     s:='SendFrom'+' '+ConnectionName+' '+go.UrundomKey+' '+Edit4.text+' '+Edit5.text+' '+Edit7.text;//+' ';
+     s:='SendFrom'+' '+ConnectionName+' '+go.UrundomKey+' '+Edit4.text+' '+Edit5.text+' '+Edit7.text+' '+CCrnsy;//;
      Form1.SendToServer(s);
      edit5.Text:='0,0';
 end;
@@ -254,7 +341,7 @@ var s:string;
 begin
      lv2.Items.Clear;
      memo4.Lines.Clear;
-     s:='listtransactions'+' '+ConnectionName+' '+go.UrundomKey+' *';//+' ';
+     s:='listtransactions'+' '+ConnectionName+' '+go.UrundomKey+' * '+CCrnsy;//;
      Form1.SendToServer(s);
 end;
 
@@ -274,6 +361,98 @@ begin
      s:='SndMsg'+' '+ConnectionName+' '+go.UrundomKey+' <'+edit9.text+'> '+ComboBox1.Text;//+' ';
      Form1.SendToServer(s);
      edit9.text:='';
+end;
+
+procedure TWork.ComboBox2Select(Sender: TObject);
+begin
+   case ComboBox2.ItemIndex of
+     0:begin
+       CCrnsy:='18332';
+       Label6.Caption:='BTC';
+       Panel41.Caption:='BTC';
+       Label21.Caption:='BTC';
+       end;
+     1:begin
+       CCrnsy:='19332';
+       Label6.Caption:='LTC';
+       Panel41.Caption:='LTC';
+       Label21.Caption:='LTC';
+       end;
+   end;
+   Label13click(sender);
+   Button4.Click;
+   lv2.Items.Clear;
+   edit8.Text:='';
+   Panel29click(sender);
+end;
+
+procedure TWork.FormCreate(Sender: TObject);
+begin
+    CCrnsy:='18332';
+end;
+
+procedure TWork.ComboBox3Select(Sender: TObject);
+begin
+     if ComboBox3.ItemIndex=0 then panel43.Color:=$004080FF else panel43.Color:=clsilver;
+     panel43.Caption:=ComboBox3.Text;
+     label24.Caption:=ComboBox3.Text;
+     label32.Caption:=ComboBox3.Text;
+end;
+
+procedure TWork.ComboBox4Select(Sender: TObject);
+begin
+     if ComboBox4.ItemIndex=0 then panel44.Color:=$004080FF else panel44.Color:=clsilver;
+//     panel44.Color:=$004080FF;
+     panel44.Caption:=ComboBox4.Text;
+     label31.Caption:=ComboBox4.Text;
+     label33.Caption:=ComboBox4.Text;
+end;
+
+procedure TWork.Edit11Change(Sender: TObject);
+var r1,r2:single;s,g:string;i:integer;
+begin
+    g:='1234567890,.';
+    for i:=1 to length(edit3.Text) do if pos(edit3.Text[i],g)=0 then begin edit3.Text:='0'; exit;end;
+    for i:=1 to length(edit11.Text) do if pos(edit11.Text[i],g)=0 then begin edit11.Text:='0'; exit;end;
+    StaticText7.Caption:=edit11.Text;
+    if BR.Checked then r1:=strtofloat(stringreplace(edit3.Text,'.',',',[rfReplaceAll])) else r1:=strtofloat(stringreplace(edit10.Text,'.',',',[rfReplaceAll]));
+    r2:=strtofloat(stringreplace(edit11.Text,'.',',',[rfReplaceAll]));
+    str(r1*r2:2:6,s);
+    if BR.Checked then edit10.Text:=s else edit3.Text:=s;
+end;
+
+procedure TWork.Image18Click(Sender: TObject);
+var s,direction:string;
+begin
+     if (label24.Caption='***')or(label31.Caption='***') then begin showmessage('Please select currensy'); exit;end;
+     if BR.Checked then direction:='1' else direction:='2';
+     s:='CreateOffer'+' '+ConnectionName+' '+go.UrundomKey+' '+direction+' '+inttostr(ComboBox3.ItemIndex)+' '+inttostr(ComboBox4.ItemIndex)+' '+edit3.Text+' '+edit11.Text+' '+edit10.Text;//+' ';
+     Form1.SendToServer(s);
+end;
+
+procedure TWork.Button1Click(Sender: TObject);
+var s:string;
+begin
+     lo1.Items.Clear;
+     lo2.Items.Clear;
+     s:='GetOffers'+' '+ConnectionName+' '+go.UrundomKey;//+' '+direction+' '+inttostr(ComboBox3.ItemIndex)+' '+inttostr(ComboBox3.ItemIndex)+' '+edit3.Text+' '+edit11.Text+' '+edit10.Text;//+' ';
+     Form1.SendToServer(s);
+end;
+
+procedure TWork.lo1SelectItem(Sender: TObject; Item: TListItem;  Selected: Boolean);
+begin
+    edit1.text:=item.SubItems.Strings[0];
+    edit2.text:=item.SubItems.Strings[1];
+    StaticText7.Caption:=item.Caption;
+    label35.Caption:=item.SubItems.Strings[2];
+end;
+
+procedure TWork.Panel46Click(Sender: TObject);
+var s:string;
+begin
+     if label35.Caption='*' then begin showmessage('Please select couple'); exit;end;
+     s:='GoExchange'+' '+ConnectionName+' '+go.UrundomKey+' '+label35.Caption;
+     Form1.SendToServer(s);
 end;
 
 end.

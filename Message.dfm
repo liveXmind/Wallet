@@ -38,7 +38,7 @@ object Msge: TMsge
     Height = 20
     Alignment = taCenter
     AutoSize = False
-    Caption = #1057'ompleted successfully !'
+    Caption = 'Seccess'
     Color = 13824211
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -63,7 +63,7 @@ object Msge: TMsge
     Top = 136
     Width = 105
     Height = 33
-    Caption = 'Close'
+    Caption = #1047#1072#1082#1088#1099#1090#1100
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -16

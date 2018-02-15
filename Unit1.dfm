@@ -17,16 +17,16 @@ object Form1: TForm1
   object Label1: TLabel
     Left = 114
     Top = 34
-    Width = 31
+    Width = 86
     Height = 13
-    Caption = 'Phone'
+    Caption = #1053#1086#1084#1077#1088' '#1090#1077#1083#1077#1092#1086#1085#1072
   end
   object Label2: TLabel
     Left = 270
     Top = 34
-    Width = 54
+    Width = 64
     Height = 13
-    Caption = 'PIN 4 digits'
+    Caption = 'PIN 4 '#1094#1080#1092#1088#1099
   end
   object Button1: TButton
     Left = 8
